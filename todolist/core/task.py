@@ -79,8 +79,9 @@ class Task:
 
         if deadline is not None:
             if not isinstance(deadline, date):
-                raise ValueError("Deadline must be a valid date object.")
+                raise ValidationError("Deadline must be a valid date object.")
             self.deadline = deadline
+            updates_applied.append("deadline")
 
 
     def __repr__(self) -> str:
