@@ -37,6 +37,7 @@ class Task:
         self.description = description
         self.status = status
         self.deadline = deadline
+        self.created_at = date.today()
 
     def change_status(self, new_status: Status) -> None:
         """Update the task status."""
