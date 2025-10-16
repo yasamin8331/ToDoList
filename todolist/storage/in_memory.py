@@ -46,15 +46,11 @@ class InMemoryStorage:
         return list(self.projects.values())
 
     def get_project(self, project_id: int) -> Project:
-        """Retrieve a single project by ID."""
-        try:
-            return self.projects[project_id]
-        except KeyError:
-            raise ValueError("Project not found.")
-
-    # ----------------------------
-    # Task-related operations
-    # ----------------------------
+        """Get a project by ID."""
+        project = self._projects.get(project_id)
+        if not project:
+            raise NotFoundError(f"Project with id {project_id} not found.")
+        return project
 
     def add_task(
         self, project_id: int, title: str, description: str = ""
