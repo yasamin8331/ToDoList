@@ -71,5 +71,27 @@ class Project:
             return [task for task in self.tasks if task.status == status_filter]
         return list(self.tasks)
 
+    def get_tasks_by_status(self) -> dict:
+        """Get tasks grouped by status."""
+        grouped = {"todo": [], "doing": [], "done": []}
+        for task in self.tasks:
+            grouped[task.status].append(task)
+        return grouped
+
+    def get_task_count(self) -> int:
+        """Return the number of tasks in this project."""
+        return len(self.tasks)
+
+    def to_dict(self) -> dict:
+        """Convert project to dictionary for serialization."""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "task_count": len(self.tasks),
+            "created_at": self.created_at.isoformat(),
+            "tasks": [task.to_dict() for task in self.tasks]
+        }
+
     def __repr__(self) -> str:
         return f"<Project {self.id}: {self.name} ({len(self.tasks)} tasks)>"
