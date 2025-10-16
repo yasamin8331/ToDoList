@@ -1,9 +1,11 @@
-
 from .task import Task
-
 from typing import List
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
+MAX_NUMBER_OF_TASK = int(os.getenv("MAX_NUMBER_OF_TASK", 20))
 class Project:
     """Represents a project containing multiple tasks."""
 
@@ -20,9 +22,12 @@ class Project:
 
     def add_task(self, task: Task) -> None:
         """Add a new task to the project."""
+        if len(self.tasks) >= MAX_NUMBER_OF_TASK:
+            raise ValueError("Cannot add more tasks. Maximum limit reached.")
         if any(t.title == task.title for t in self.tasks):
             raise ValueError("A task with this title already exists.")
         self.tasks.append(task)
+
 
     def remove_task(self, task_id: int) -> None:
         """Remove a task by ID."""
