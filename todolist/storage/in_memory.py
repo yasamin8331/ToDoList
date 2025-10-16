@@ -116,3 +116,8 @@ class InMemoryStorage:
         """Delete a task from a project."""
         project = self.get_project(project_id)
         project.remove_task(task_id)
+
+    def list_tasks(self, project_id: int, status_filter: Optional[str] = None) -> List[Task]:
+        """List tasks in a project, optionally filtered by status."""
+        project = self.get_project(project_id)
+        return project.list_tasks(status_filter)
