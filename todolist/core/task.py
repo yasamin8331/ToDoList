@@ -1,13 +1,12 @@
-"""Task model definition for ToDoList."""
-
 from datetime import date
+
 from typing import Literal, Optional
 
 Status = Literal["todo", "doing", "done"]
 
-
 class Task:
     """Represents a single task belonging to a project."""
+
 
     def __init__(
         self,
@@ -17,6 +16,9 @@ class Task:
         status: Status = "todo",
         deadline: Optional[date] = None,
     ):
+
+        if not title:
+            raise ValueError("Title cannot be empty.")
         if len(title) > 30:
             raise ValueError("Title must not exceed 30 characters.")
         if len(description) > 150:
