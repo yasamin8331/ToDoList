@@ -59,8 +59,16 @@ class Project:
                 return task
         return None
 
-    def list_tasks(self) -> List[Task]:
+    def list_all_tasks(self) -> List[Task]:
         """Return all tasks."""
+        return list(self.tasks)
+
+    def list_tasks(self, status_filter: Optional[str] = None) -> List[Task]:
+        """Return all tasks, optionally filtered by status."""
+        if status_filter:
+            if status_filter not in ("todo", "doing", "done"):
+                raise ValidationError("Invalid status filter. Use 'todo', 'doing', or 'done'.")
+            return [task for task in self.tasks if task.status == status_filter]
         return list(self.tasks)
 
     def __repr__(self) -> str:
