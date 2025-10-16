@@ -95,3 +95,11 @@ class Project:
 
     def __repr__(self) -> str:
         return f"<Project {self.id}: {self.name} ({len(self.tasks)} tasks)>"
+
+    def __str__(self) -> str:
+        """User-friendly string representation."""
+        status_counts = self.get_tasks_by_status()
+        return (f"📁 {self.name} - {self.description} | "
+                f"📊 Todo: {len(status_counts['todo'])}, "
+                f"Doing: {len(status_counts['doing'])}, "
+                f"Done: {len(status_counts['done'])}")
