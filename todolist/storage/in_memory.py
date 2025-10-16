@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional
 from todolist.core.project import Project
+from datetime import date
 from todolist.core.task import Task
 from todolist.core.config import Config
 from todolist.core.exception import LimitExceededError, DuplicateError, NotFoundError
@@ -70,17 +71,23 @@ class InMemoryStorage:
 
         return project
 
-    def add_task(
-        self, project_id: int, title: str, description: str = ""
+    def add_task_to_project(
+            self,
+            project_id: int,
+            title: str,
+            description: str = "",
+            status: str = "todo",
+            deadline: Optional[date] = None
     ) -> Task:
-        """Add a new task to a project."""
+        """Add a task to a specific project."""
         project = self.get_project(project_id)
-        if len(project.tasks) >= MAX_TASKS:
-            raise ValueError(f"Cannot add more than {MAX_TASKS} tasks per project.")
 
-        task = Task(self.task_counter, title, description)
+        task_id = self._next_task_id
+        task = Task(task_id, title, description, status, deadline)
+
         project.add_task(task)
-        self.task_counter += 1
+        self._next_task_id += 1
+
         return task
 
     def delete_task(self, project_id: int, task_id: int) -> None:
