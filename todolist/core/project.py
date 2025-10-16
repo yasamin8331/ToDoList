@@ -39,11 +39,18 @@ class Project:
         print(f"✅ Task '{task.title}' added to project '{self.name}'")
 
     def remove_task(self, task_id: int) -> None:
-        """Remove a task by ID."""
-        before_count = len(self.tasks)
-        self.tasks = [t for t in self.tasks if t.id != task_id]
-        if len(self.tasks) == before_count:
-            raise ValueError(f"Task with id {task_id} not found.")
+        """Remove a task by ID with proper error handling."""
+        task_to_remove = None
+        for task in self.tasks:
+            if task.id == task_id:
+                task_to_remove = task
+                break
+
+        if task_to_remove:
+            self.tasks.remove(task_to_remove)
+            print(f"🗑️ Task '{task_to_remove.title}' removed from project '{self.name}'")
+        else:
+            raise NotFoundError(f"Task with id {task_id} not found in project '{self.name}'")
 
     def list_tasks(self) -> List[Task]:
         """Return all tasks."""
