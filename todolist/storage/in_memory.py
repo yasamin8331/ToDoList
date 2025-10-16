@@ -121,3 +121,22 @@ class InMemoryStorage:
         """List tasks in a project, optionally filtered by status."""
         project = self.get_project(project_id)
         return project.list_tasks(status_filter)
+
+    def get_project_stats(self) -> Dict:
+        """Get statistics about all projects."""
+        total_projects = len(self._projects)
+        total_tasks = sum(project.get_task_count() for project in self._projects.values())
+
+        status_counts = {"todo": 0, "doing": 0, "done": 0}
+        for project in self._projects.values():
+            project_statuses = project.get_tasks_by_status()
+            for status, tasks in project_statuses.items():
+                status_counts[status] += len(tasks)
+
+        return {
+            "total_projects": total_projects,
+            "total_tasks": total_tasks,
+            "tasks_by_status": status_counts,
+            "max_projects": Config.MAX_PROJECTS,
+            "max_tasks_per_project": Config.MAX_TASKS_PER_PROJECT
+        }
