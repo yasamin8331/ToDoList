@@ -83,6 +83,27 @@ class Task:
             self.deadline = deadline
             updates_applied.append("deadline")
 
+        if updates_applied:
+            print(f"Task updated: {', '.join(updates_applied)}")
+
+    def to_dict(self) -> dict:
+        """Convert task to dictionary for serialization."""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "status": self.status,
+            "deadline": self.deadline.isoformat() if self.deadline else None,
+            "created_at": self.created_at.isoformat()
+        }
 
     def __repr__(self) -> str:
-        return f"<Task {self.id}: {self.title} [{self.status}]>"
+        deadline_str = f", deadline: {self.deadline}" if self.deadline else ""
+        return f"<Task {self.id}: {self.title} [{self.status}]{deadline_str}>"
+
+    def __str__(self) -> str:
+        """User-friendly string representation."""
+        status_icons = {"todo": "⏳", "doing": "🔄", "done": "✅"}
+        icon = status_icons.get(self.status, "📝")
+        deadline_info = f" | 📅 {self.deadline}" if self.deadline else ""
+        return f"{icon} {self.title} - {self.status}{deadline_info}"
