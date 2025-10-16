@@ -1,6 +1,7 @@
 from datetime import date
-
 from typing import Literal, Optional
+from .exception import ValidationError
+from .config import Config
 
 Status = Literal["todo", "doing", "done"]
 
@@ -16,6 +17,9 @@ class Task:
         status: Status = "todo",
         deadline: Optional[date] = None,
     ):
+        # Validate inputs using Config validation methods
+        Config.validate_task_title(title)
+        Config.validate_task_description(description)
 
         if not title:
             raise ValueError("Title cannot be empty.")
