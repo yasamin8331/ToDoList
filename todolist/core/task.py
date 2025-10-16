@@ -66,9 +66,9 @@ class Task:
             updates_applied.append("title")
 
         if description is not None:
-            if len(description) > 150:
-                raise ValueError("Description must not exceed 150 characters.")
+            Config.validate_task_description(description)
             self.description = description
+            updates_applied.append("description")
 
         if status is not None:
             if status not in ("todo", "doing", "done"):
