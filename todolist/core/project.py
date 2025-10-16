@@ -52,6 +52,13 @@ class Project:
         else:
             raise NotFoundError(f"Task with id {task_id} not found in project '{self.name}'")
 
+    def get_task(self, task_id: int) -> Optional[Task]:
+        """Get a task by ID."""
+        for task in self.tasks:
+            if task.id == task_id:
+                return task
+        return None
+
     def list_tasks(self) -> List[Task]:
         """Return all tasks."""
         return list(self.tasks)
