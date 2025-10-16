@@ -1,5 +1,8 @@
 from .task import Task
-from typing import List
+from typing import List, Optional
+from .exception import ValidationError, LimitExceededError, DuplicateError, NotFoundError
+from .config import Config
+from datetime import date
 from dotenv import load_dotenv
 import os
 
@@ -10,15 +13,16 @@ class Project:
     """Represents a project containing multiple tasks."""
 
     def __init__(self, id_: int, name: str, description: str = ""):
-        if len(name) > 30:
-            raise ValueError("Project name must not exceed 30 characters.")
-        if len(description) > 150:
-            raise ValueError("Description must not exceed 150 characters.")
+
+        # Validate inputs using Config validation methods
+        Config.validate_project_name(name)
+        Config.validate_project_description(description)
 
         self.id = id_
         self.name = name
         self.description = description
         self.tasks: List[Task] = []
+        self.created_at = date.today()
 
     def add_task(self, task: Task) -> None:
         """Add a new task to the project."""
