@@ -56,11 +56,14 @@ class Task:
             status: Optional[Status] = None,
             deadline: Optional[date] = None,
     ) -> None:
-        """Edit task attributes (title, description, status, deadline)."""
+        """Edit task attributes with comprehensive validation."""
+
+        updates_applied = []
+
         if title is not None:
-            if len(title) > 30:
-                raise ValueError("Title must not exceed 30 characters.")
+            Config.validate_task_title(title)
             self.title = title
+            updates_applied.append("title")
 
         if description is not None:
             if len(description) > 150:
