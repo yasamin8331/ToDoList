@@ -22,16 +22,16 @@ class Task:
         Config.validate_task_description(description)
 
         if not title:
-            raise ValueError("Title cannot be empty.")
+            raise ValidationError("Title cannot be empty.")
         if len(title) > 30:
-            raise ValueError("Title must not exceed 30 characters.")
+            raise ValidationError("Title must not exceed 30 characters.")
         if len(description) > 150:
-            raise ValueError("Description must not exceed 150 characters.")
+            raise ValidationError("Description must not exceed 150 characters.")
         if status not in ("todo", "doing", "done"):
-            raise ValueError(f"Invalid status: {status}")
-        if deadline is not None and not isinstance(deadline, date):
-            raise ValueError("Deadline must be a valid date object.")
+            raise ValidationError(f"Invalid status: {status}")
 
+        if deadline is not None and not isinstance(deadline, date):
+            raise ValidationError("Deadline must be a valid date object.")
         self.id = id_
         self.title = title
         self.description = description
