@@ -1,19 +1,21 @@
-"""CLI entrypoint for the ToDoList (In-Memory) application.
-
-This module provides a simple command line interface to create and
-display projects using the InMemoryStorage implementation.
-"""
-
-from typing import Any, Iterable
+"""CLI entrypoint for the ToDoList (In-Memory) application."""
+from datetime import datetime
+from typing import List
 from todolist.storage.in_memory import InMemoryStorage
-
+from todolist.core.exception import ToDoListError
+from todolist.core.project import Project
+from todolist.core.task import Task
 
 def print_menu() -> None:
-    """Print the main menu to the user."""
-    print("\n=== ToDoList CLI ===")
-    print("1. Create project")
-    print("2. List projects")
-    print("3. Exit")
+    """Print the main menu to the user."""  """Print the main menu to the user."""
+    print("\n" + "="*50)
+    print("🎯 ToDoList CLI - Main Menu")
+    print("="*50)
+    print("1. 📁 Project Management")
+    print("2. 📝 Task Management")
+    print("3. 📊 View Reports")
+    print("4. 🚪 Exit")
+    print("-"*50)
 
 
 def prompt_project_creation(storage: InMemoryStorage) -> None:
