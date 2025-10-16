@@ -5,25 +5,34 @@ from todolist.core.config import Config
 from todolist.core.exception import LimitExceededError, DuplicateError, NotFoundError
 
 class InMemoryStorage:
-    """A simple in-memory storage backend."""
+    """In-memory storage implementation for projects and tasks."""
 
-    def __init__(self) -> None:
-        self.projects: Dict[int, Project] = {}
-        self.project_counter = 1
-        self.task_counter = 1
+    def __init__(self) :
+        self._projects: Dict[int, Project] = {}
+        self._next_project_id = 1
+        self._next_task_id = 1
 
     def add_project(self, name: str, description: str = "") -> Project:
-        """Add a new project to storage."""
-        if len(self.projects) >= MAX_PROJECTS:
-            raise ValueError(f"Cannot create more than {MAX_PROJECTS} projects.")
+        """Create a new project with validation."""
+        # Check maximum projects limit
+        if len(self._projects) >= Config.MAX_PROJECTS:
+            raise LimitExceededError(
+                f"Cannot create more projects. Maximum limit ({Config.MAX_PROJECTS}) reached."
+            )
 
-        for p in self.projects.values():
-            if p.name == name:
-                raise ValueError(f"A project named '{name}' already exists.")
+        # Check for duplicate project names
+        if any(p.name.lower() == name.lower() for p in self._projects.values()):
+            raise DuplicateError("A project with this name already exists.")
 
-        project = Project(self.project_counter, name, description)
-        self.projects[self.project_counter] = project
-        self.project_counter += 1
+        # Validate inputs
+        Config.validate_project_name(name)
+        Config.validate_project_description(description)
+
+        project_id = self._next_project_id
+        project = Project(project_id, name, description)
+        self._projects[project_id] = project
+        self._next_project_id += 1
+
         return project
 
     def delete_project(self, project_id: int) -> None:
