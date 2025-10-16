@@ -52,6 +52,23 @@ class InMemoryStorage:
             raise NotFoundError(f"Project with id {project_id} not found.")
         return project
 
+    def update_project(self, project_id: int, name: str, description: str) -> Project:
+        """Update project details."""
+        project = self.get_project(project_id)
+
+        # Check for duplicate names (excluding current project)
+        if any(p.id != project_id and p.name.lower() == name.lower()
+               for p in self._projects.values()):
+            raise DuplicateError("Another project with this name already exists.")
+
+        Config.validate_project_name(name)
+        Config.validate_project_description(description)
+
+        project.name = name
+        project.description = description
+
+        return project
+
     def add_task(
         self, project_id: int, title: str, description: str = ""
     ) -> Task:
