@@ -25,13 +25,18 @@ class Project:
         self.created_at = date.today()
 
     def add_task(self, task: Task) -> None:
-        """Add a new task to the project."""
-        if len(self.tasks) >= MAX_NUMBER_OF_TASK:
-            raise ValueError("Cannot add more tasks. Maximum limit reached.")
-        if any(t.title == task.title for t in self.tasks):
-            raise ValueError("A task with this title already exists.")
-        self.tasks.append(task)
+        """Add a new task to the project with validation."""
+        if len(self.tasks) >= Config.MAX_TASKS_PER_PROJECT:
+            raise LimitExceededError(
+                f"Cannot add more tasks. Maximum limit ({Config.MAX_TASKS_PER_PROJECT}) reached."
+            )
 
+            # Check for duplicate task titles
+        if any(t.title.lower() == task.title.lower() for t in self.tasks):
+            raise DuplicateError("A task with this title already exists in this project.")
+
+        self.tasks.append(task)
+        print(f"✅ Task '{task.title}' added to project '{self.name}'")
 
     def remove_task(self, task_id: int) -> None:
         """Remove a task by ID."""
