@@ -1,7 +1,8 @@
-from typing import Dict
+from typing import Dict, List, Optional
 from todolist.core.project import Project
 from todolist.core.task import Task
-from todolist.core.config import MAX_PROJECTS, MAX_TASKS
+from todolist.core.config import Config
+from todolist.core.exception import LimitExceededError, DuplicateError, NotFoundError
 
 class InMemoryStorage:
     """A simple in-memory storage backend."""
@@ -10,10 +11,6 @@ class InMemoryStorage:
         self.projects: Dict[int, Project] = {}
         self.project_counter = 1
         self.task_counter = 1
-
-    # ----------------------------
-    # Project-related operations
-    # ----------------------------
 
     def add_project(self, name: str, description: str = "") -> Project:
         """Add a new project to storage."""
