@@ -42,7 +42,7 @@ class Task:
     def change_status(self, new_status: Status) -> None:
         """Update the task status with validation."""
         if new_status not in ("todo", "doing", "done"):
-            raise ValueError(f"Invalid new status: {new_status}")
+            raise ValidationError(f"Invalid new status: {new_status}")
         self.status = new_status
 
         old_status = self.status
