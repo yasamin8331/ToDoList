@@ -90,6 +90,28 @@ class InMemoryStorage:
 
         return task
 
+    def get_task(self, project_id: int, task_id: int) -> Task:
+        """Get a specific task from a project."""
+        project = self.get_project(project_id)
+        task = project.get_task(task_id)
+        if not task:
+            raise NotFoundError(f"Task with id {task_id} not found in project {project_id}.")
+        return task
+
+    def update_task(
+            self,
+            project_id: int,
+            task_id: int,
+            title: Optional[str] = None,
+            description: Optional[str] = None,
+            status: Optional[str] = None,
+            deadline: Optional[date] = None
+    ) -> Task:
+        """Update task details."""
+        task = self.get_task(project_id, task_id)
+        task.update_task(title, description, status, deadline)
+        return task
+
     def delete_task(self, project_id: int, task_id: int) -> None:
         """Delete a task from a project."""
         project = self.get_project(project_id)
