@@ -72,8 +72,10 @@ class Task:
 
         if status is not None:
             if status not in ("todo", "doing", "done"):
-                raise ValueError(f"Invalid status: {status}")
+                raise ValidationError(f"Invalid status: {status}")
+            old_status = self.status
             self.status = status
+            updates_applied.append(f"status (from '{old_status}' to '{status}')")
 
         if deadline is not None:
             if not isinstance(deadline, date):
