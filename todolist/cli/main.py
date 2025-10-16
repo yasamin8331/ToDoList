@@ -1,9 +1,9 @@
 """CLI entrypoint for the ToDoList (In-Memory) application."""
 
-from datetime import datetime
+from datetime import datetime, date
+from typing import Optional
 from todolist.storage.in_memory import InMemoryStorage
-from todolist.core.exception import ToDoListError
-
+from todolist.core.exception import ToDoListError, ValidationError, NotFoundError
 
 def print_main_menu() -> None:
     """Print the main menu to the user."""
@@ -56,11 +56,67 @@ def print_reports_menu() -> None:
     print("-" * 40)
 
 
+def get_validated_input(prompt: str, validation_func=None, error_message: str = "Invalid input") -> str:
+    """Get validated input from user with error handling."""
+    while True:
+        try:
+            value = input(prompt).strip()
+            if validation_func:
+                validation_func(value)
+            return value
+        except (ValueError, ValidationError) as e:
+            print(f"❌ {error_message}: {e}")
+            print("Please try again.")
+
+
+def get_validated_date(prompt: str) -> Optional[date]:
+    """Get validated date input from user."""
+    while True:
+        date_str = input(prompt).strip()
+        if not date_str:  # Empty input means no deadline
+            return None
+
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            print("❌ Invalid date format. Please use YYYY-MM-DD format (e.g., 2024-01-15) or leave empty.")
+            print("Please try again.")
+
+
+def get_validated_status() -> str:
+    """Get validated status input from user."""
+    while True:
+        status = input("Status (default: todo): ").strip().lower() or "todo"
+        if status in ("todo", "doing", "done"):
+            return status
+        else:
+            print("❌ Invalid status. Please choose from: todo, doing, done")
+            print("Please try again.")
+
+
+def get_validated_project_id(storage: InMemoryStorage) -> int:
+    """Get validated project ID from user."""
+    while True:
+        try:
+            project_id = int(input("Select project ID: ").strip())
+            storage.get_project(project_id)  # This will raise NotFoundError if project doesn't exist
+            return project_id
+        except ValueError:
+            print("❌ Invalid project ID. Please enter a number.")
+        except NotFoundError as e:
+            print(f"❌ {e}")
+        print("Please try again.")
+
+
 def handle_project_creation(storage: InMemoryStorage) -> None:
     """Handle project creation with user input."""
     try:
         print("\n--- Create New Project ---")
-        name = input("Project name: ").strip()
+        name = get_validated_input(
+            "Project name: ",
+            lambda x: None if x.strip() else exec('raise ValueError("Project name cannot be empty")'),
+            "Project name validation failed"
+        )
         description = input("Project description: ").strip()
 
         project = storage.add_project(name, description)
@@ -105,22 +161,23 @@ def handle_task_creation(storage: InMemoryStorage) -> None:
         for project in projects:
             print(f"  {project.id}. {project.name}")
 
-        project_id = int(input("Select project ID: ").strip())
-        title = input("Task title: ").strip()
+        project_id = get_validated_project_id(storage)
+        title = get_validated_input(
+            "Task title: ",
+            lambda x: None if x.strip() else exec('raise ValueError("Task title cannot be empty")'),
+            "Task title validation failed"
+        )
         description = input("Task description: ").strip()
 
         print("Status options: todo, doing, done")
-        status = input("Status (default: todo): ").strip().lower() or "todo"
+        status = get_validated_status()
 
-        deadline_str = input("Deadline (YYYY-MM-DD, optional): ").strip()
-        deadline = None
-        if deadline_str:
-            deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
+        deadline = get_validated_date("Deadline (YYYY-MM-DD, optional): ")
 
         task = storage.add_task_to_project(project_id, title, description, status, deadline)
         print(f"✅ Task '{task.title}' added successfully to project!")
 
-    except (ValueError, ToDoListError) as e:
+    except ToDoListError as e:
         print(f"❌ Error: {e}")
 
 
@@ -138,7 +195,7 @@ def display_tasks_in_project(storage: InMemoryStorage) -> None:
         for project in projects:
             print(f"  {project.id}. {project.name}")
 
-        project_id = int(input("Select project ID: ").strip())
+        project_id = get_validated_project_id(storage)
         project = storage.get_project(project_id)
 
         tasks = storage.list_tasks(project_id)
@@ -155,7 +212,7 @@ def display_tasks_in_project(storage: InMemoryStorage) -> None:
             if task.description:
                 print(f"   📝 {task.description}")
 
-    except (ValueError, ToDoListError) as e:
+    except ToDoListError as e:
         print(f"❌ Error: {e}")
 
 
