@@ -36,14 +36,15 @@ class InMemoryStorage:
         return project
 
     def delete_project(self, project_id: int) -> None:
-        """Delete a project by ID."""
-        if project_id not in self.projects:
-            raise ValueError("Project not found.")
-        del self.projects[project_id]
+        """Delete a project and all its tasks (cascade delete)."""
+        project = self.get_project(project_id)
+        project_name = project.name
+        del self._projects[project_id]
+        print(f"🗑️ Project '{project_name}' and all its tasks have been deleted.")
 
     def list_projects(self) -> List[Project]:
-        """Return a list of all projects."""
-        return list(self.projects.values())
+        """Return all projects sorted by ID."""
+        return sorted(self._projects.values(), key=lambda p: p.id)
 
     def get_project(self, project_id: int) -> Project:
         """Get a project by ID."""
