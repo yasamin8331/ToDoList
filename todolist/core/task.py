@@ -40,10 +40,14 @@ class Task:
         self.created_at = date.today()
 
     def change_status(self, new_status: Status) -> None:
-        """Update the task status."""
+        """Update the task status with validation."""
         if new_status not in ("todo", "doing", "done"):
             raise ValueError(f"Invalid new status: {new_status}")
         self.status = new_status
+
+        old_status = self.status
+        self.status = new_status
+        print(f"Task status changed from '{old_status}' to '{new_status}'")
 
     def update_task(
             self,
