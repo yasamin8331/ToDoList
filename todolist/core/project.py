@@ -1,19 +1,28 @@
-from .task import Task
-from typing import List, Optional
-from .exception import ValidationError, LimitExceededError, DuplicateError, NotFoundError
-from .config import Config
-from datetime import date
-from dotenv import load_dotenv
 import os
+from datetime import date
+from typing import List, Optional
+
+from dotenv import load_dotenv
+
+from .config import Config
+from .exception import (
+    ValidationError,
+    LimitExceededError,
+    DuplicateError,
+    NotFoundError,
+)
+from .task import Task
 
 load_dotenv()
 
 MAX_NUMBER_OF_TASK = int(os.getenv("MAX_NUMBER_OF_TASK", 20))
+
+
 class Project:
     """Represents a project containing multiple tasks."""
 
     def __init__(self, id_: int, name: str, description: str = ""):
-
+        """Initialize a project with validation."""
         # Validate inputs using Config validation methods
         Config.validate_project_name(name)
         Config.validate_project_description(description)
@@ -28,12 +37,15 @@ class Project:
         """Add a new task to the project with validation."""
         if len(self.tasks) >= Config.MAX_TASKS_PER_PROJECT:
             raise LimitExceededError(
-                f"Cannot add more tasks. Maximum limit ({Config.MAX_TASKS_PER_PROJECT}) reached."
+                f"Cannot add more tasks. Maximum limit "
+                f"({Config.MAX_TASKS_PER_PROJECT}) reached."
             )
 
-            # Check for duplicate task titles
+        # Check for duplicate task titles
         if any(t.title.lower() == task.title.lower() for t in self.tasks):
-            raise DuplicateError("A task with this title already exists in this project.")
+            raise DuplicateError(
+                "A task with this title already exists in this project."
+            )
 
         self.tasks.append(task)
         print(f"✅ Task '{task.title}' added to project '{self.name}'")
@@ -94,6 +106,7 @@ class Project:
         }
 
     def __repr__(self) -> str:
+        """Official string representation."""
         return f"<Project {self.id}: {self.name} ({len(self.tasks)} tasks)>"
 
     def __str__(self) -> str:
