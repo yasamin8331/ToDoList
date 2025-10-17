@@ -1,14 +1,23 @@
-from typing import Dict, List, Optional
-from todolist.core.project import Project
+"""In-memory storage implementation for projects and tasks."""
+
 from datetime import date
-from todolist.core.task import Task
+from typing import Dict, List, Optional
+
 from todolist.core.config import Config
-from todolist.core.exception import LimitExceededError, DuplicateError, NotFoundError
+from todolist.core.exception import (
+    LimitExceededError,
+    DuplicateError,
+    NotFoundError,
+)
+from todolist.core.project import Project
+from todolist.core.task import Task
+
 
 class InMemoryStorage:
     """In-memory storage implementation for projects and tasks."""
 
-    def __init__(self) :
+    def __init__(self) -> None:
+        """Initialize project and task storage."""
         self._projects: Dict[int, Project] = {}
         self._next_project_id = 1
         self._next_task_id = 1
@@ -59,8 +68,10 @@ class InMemoryStorage:
         project = self.get_project(project_id)
 
         # Check for duplicate names (excluding current project)
-        if any(p.id != project_id and p.name.lower() == name.lower()
-               for p in self._projects.values()):
+        if any(
+            p.id != project_id and p.name.lower() == name.lower()
+            for p in self._projects.values()
+        ):
             raise DuplicateError("Another project with this name already exists.")
 
         Config.validate_project_name(name)
@@ -72,12 +83,12 @@ class InMemoryStorage:
         return project
 
     def add_task_to_project(
-            self,
-            project_id: int,
-            title: str,
-            description: str = "",
-            status: str = "todo",
-            deadline: Optional[date] = None
+        self,
+        project_id: int,
+        title: str,
+        description: str = "",
+        status: str = "todo",
+        deadline: Optional[date] = None,
     ) -> Task:
         """Add a task to a specific project."""
         project = self.get_project(project_id)
@@ -95,17 +106,19 @@ class InMemoryStorage:
         project = self.get_project(project_id)
         task = project.get_task(task_id)
         if not task:
-            raise NotFoundError(f"Task with id {task_id} not found in project {project_id}.")
+            raise NotFoundError(
+                f"Task with id {task_id} not found in project {project_id}."
+            )
         return task
 
     def update_task(
-            self,
-            project_id: int,
-            task_id: int,
-            title: Optional[str] = None,
-            description: Optional[str] = None,
-            status: Optional[str] = None,
-            deadline: Optional[date] = None
+        self,
+        project_id: int,
+        task_id: int,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        status: Optional[str] = None,
+        deadline: Optional[date] = None,
     ) -> Task:
         """Update task details."""
         task = self.get_task(project_id, task_id)
@@ -117,7 +130,9 @@ class InMemoryStorage:
         project = self.get_project(project_id)
         project.remove_task(task_id)
 
-    def list_tasks(self, project_id: int, status_filter: Optional[str] = None) -> List[Task]:
+    def list_tasks(
+        self, project_id: int, status_filter: Optional[str] = None
+    ) -> List[Task]:
         """List tasks in a project, optionally filtered by status."""
         project = self.get_project(project_id)
         return project.list_tasks(status_filter)
@@ -138,5 +153,5 @@ class InMemoryStorage:
             "total_tasks": total_tasks,
             "tasks_by_status": status_counts,
             "max_projects": Config.MAX_PROJECTS,
-            "max_tasks_per_project": Config.MAX_TASKS_PER_PROJECT
+            "max_tasks_per_project": Config.MAX_TASKS_PER_PROJECT,
         }
