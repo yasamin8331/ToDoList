@@ -1,13 +1,13 @@
 from datetime import date
 from typing import Literal, Optional
-from .exception import ValidationError
+
 from .config import Config
+from .exception import ValidationError
 
 Status = Literal["todo", "doing", "done"]
 
 class Task:
     """Represents a single task belonging to a project."""
-
 
     def __init__(
         self,
@@ -17,6 +17,7 @@ class Task:
         status: Status = "todo",
         deadline: Optional[date] = None,
     ):
+        """Initialize a Task instance with validation."""
         # Validate inputs using Config validation methods
         Config.validate_task_title(title)
         Config.validate_task_description(description)
@@ -43,7 +44,6 @@ class Task:
         """Update the task status with validation."""
         if new_status not in ("todo", "doing", "done"):
             raise ValidationError(f"Invalid new status: {new_status}")
-        self.status = new_status
 
         old_status = self.status
         self.status = new_status
@@ -57,7 +57,6 @@ class Task:
             deadline: Optional[date] = None,
     ) -> None:
         """Edit task attributes with comprehensive validation."""
-
         updates_applied = []
 
         if title is not None:
@@ -98,6 +97,7 @@ class Task:
         }
 
     def __repr__(self) -> str:
+        """Official string representation for debugging."""
         deadline_str = f", deadline: {self.deadline}" if self.deadline else ""
         return f"<Task {self.id}: {self.title} [{self.status}]{deadline_str}>"
 
