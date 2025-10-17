@@ -14,8 +14,8 @@ class Config:
     """Application configuration with validation."""
 
     # Read configuration values with defaults and validation
-    MAX_PROJECTS: int = int(os.getenv("MAX_NUMBER_OF_PROJECT", "5"))
-    MAX_TASKS_PER_PROJECT: int = int(os.getenv("MAX_NUMBER_OF_TASK", "20"))
+    MAX_PROJECTS: int = int(os.getenv("MAX_NUMBER_OF_PROJECT", "10"))
+    MAX_TASKS_PER_PROJECT: int = int(os.getenv("MAX_NUMBER_OF_TASK", "100"))
 
     # Validation
     if MAX_PROJECTS <= 0:

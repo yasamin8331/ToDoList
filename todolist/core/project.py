@@ -15,7 +15,7 @@ from .task import Task
 
 load_dotenv()
 
-MAX_NUMBER_OF_TASK = int(os.getenv("MAX_NUMBER_OF_TASK", 20))
+MAX_NUMBER_OF_TASK = int(os.getenv("MAX_NUMBER_OF_TASK", 100))
 
 
 class Project:
