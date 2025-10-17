@@ -1,8 +1,11 @@
 """Project configuration loader using dotenv."""
 
 import os
+
 from dotenv import load_dotenv
+
 from .exception import ValidationError
+
 # Load environment variables from .env
 load_dotenv()
 
@@ -46,4 +49,6 @@ class Config:
     def validate_task_description(cls, description: str) -> None:
         """Validate task description according to requirements."""
         if len(description) > 150:
-            raise ValidationError("Task description must not exceed 150 characters")
+            raise ValidationError(
+                "Task description must not exceed 150 characters"
+            )
