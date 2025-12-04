@@ -22,10 +22,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-run-project = "todolist.__main__:main"
+run-project = "app.main:main"
 
 # Cron-like command for auto-closing overdue tasks
-todolist-tasks-autoclose-overdue = "todolist.cron_autoclose:main"
+todolist-tasks-autoclose-overdue = "app.commands.autoclose_overdue:main"
 
 # Helper command to run Alembic migrations from Python
 todolist-db-upgrade = "todolist.db_migrate:main"

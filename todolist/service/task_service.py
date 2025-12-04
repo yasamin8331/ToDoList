@@ -12,14 +12,14 @@ from todolist.core.exception import (
 )
 from todolist.core.project import Project
 from todolist.core.task import Task, Status
-from todolist.storage.in_memory import InMemoryStorage
+from todolist.storage.repository import ProjectRepository
 
 
 class TaskService:
     """Service for managing task business logic."""
 
-    def __init__(self, storage: InMemoryStorage):
-        """Initialize task service with storage."""
+    def __init__(self, storage: ProjectRepository):
+        """Initialize task service with an abstract repository."""
         self._storage = storage
 
     def create_task(
