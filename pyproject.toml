@@ -14,6 +14,7 @@ python = "^3.14"
 python-dotenv = "^1.1.1"
 SQLAlchemy = "^2.0.36"
 psycopg2-binary = "^2.9.10"
+schedule = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -21,3 +22,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 run-project = "todolist.__main__:main"
+
+# Cron-like command for auto-closing overdue tasks
+todolist-tasks-autoclose-overdue = "todolist.cron_autoclose:main"

@@ -200,3 +200,36 @@ class TaskService:
 
         return project.list_all_tasks()
 
+    # ==================== Cron/Job Helpers ====================
+
+    def autoclose_overdue_tasks(self, today: Optional[date] = None) -> int:
+        """Auto-close overdue tasks (deadline < today & status != done).
+
+        Returns the number of tasks that were updated.
+        """
+        if today is None:
+            today = date.today()
+
+        updated_count = 0
+
+        # Iterate over all projects and their tasks
+        projects: List[Project] = self._storage.list_projects()
+        for project in projects:
+            changed = False
+            for task in project.list_all_tasks():
+                if (
+                    task.deadline is not None
+                    and task.deadline < today
+                    and task.status != "done"
+                ):
+                    task.status = "done"
+                    # نوع فیلد مطابق مدل: فقط تاریخ بسته‌شدن
+                    task.closed_at = today
+                    updated_count += 1
+                    changed = True
+
+            if changed:
+                self._storage.save_project(project)
+
+        return updated_count
+

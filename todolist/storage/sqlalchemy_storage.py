@@ -42,6 +42,7 @@ class TaskModel(Base):
     status: Mapped[str] = mapped_column(String(20), default="todo")
     deadline: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     created_at: Mapped[date] = mapped_column(Date, default=date.today)
+    closed_at: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     project_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
@@ -79,6 +80,7 @@ class SqlAlchemyStorage:
                     status=task.status,
                     deadline=task.deadline,
                     created_at=task.created_at,
+                    closed_at=task.closed_at,
                 )
                 db_project.tasks.append(db_task)
 
@@ -105,6 +107,7 @@ class SqlAlchemyStorage:
                     description=db_task.description,
                     status=db_task.status,
                     deadline=db_task.deadline,
+                    closed_at=db_task.closed_at,
                 )
                 task.created_at = db_task.created_at
                 project.tasks.append(task)
