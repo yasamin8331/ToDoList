@@ -3,7 +3,8 @@
 from datetime import datetime, date
 from typing import Optional
 
-from todolist.storage.in_memory import InMemoryStorage
+from todolist.storage.sqlalchemy_storage import SqlAlchemyStorage
+from todolist.db import init_db
 from todolist.service.project_service import ProjectService
 from todolist.service.task_service import TaskService
 from todolist.core.exception import ToDoListError, ValidationError, NotFoundError
@@ -520,8 +521,9 @@ def show_project_statistics(project_service: ProjectService) -> None:
 
 def main() -> None:
     """Main application loop."""
-    # Initialize storage and services
-    storage = InMemoryStorage()
+    # Initialize database and storage
+    init_db()
+    storage = SqlAlchemyStorage()
     project_service = ProjectService(storage)
     task_service = TaskService(storage)
 
