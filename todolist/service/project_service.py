@@ -10,14 +10,14 @@ from todolist.core.exception import (
     ValidationError,
 )
 from todolist.core.project import Project
-from todolist.storage.in_memory import InMemoryStorage
+from todolist.storage.repository import ProjectRepository
 
 
 class ProjectService:
     """Service for managing project business logic."""
 
-    def __init__(self, storage: InMemoryStorage):
-        """Initialize project service with storage."""
+    def __init__(self, storage: ProjectRepository):
+        """Initialize project service with an abstract repository."""
         self._storage = storage
 
     def create_project(self, name: str, description: str = "") -> Project:

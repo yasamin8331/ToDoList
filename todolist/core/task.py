@@ -24,6 +24,7 @@ class Task:
         description: str = "",
         status: Status = "todo",
         deadline: Optional[date] = None,
+        closed_at: Optional[date] = None,
     ):
         """Initialize a Task instance - no validation, just data assignment."""
         self.id = id_
@@ -32,6 +33,7 @@ class Task:
         self.status = status
         self.deadline = deadline
         self.created_at = date.today()
+        self.closed_at = closed_at
 
     def to_dict(self) -> dict:
         """Convert task to dictionary for serialization."""
@@ -41,7 +43,8 @@ class Task:
             "description": self.description,
             "status": self.status,
             "deadline": self.deadline.isoformat() if self.deadline else None,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
+            "closed_at": self.closed_at.isoformat() if self.closed_at else None,
         }
 
     def __repr__(self) -> str:
