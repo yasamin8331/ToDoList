@@ -22,7 +22,7 @@ class ProjectRepository(Protocol):
 
     # Project CRUD
     def save_project(self, project: Project) -> None:
-        ...
+        pass
 
     def get_project(self, project_id: int) -> Project:
         ...
